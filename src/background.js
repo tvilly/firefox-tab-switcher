@@ -127,9 +127,9 @@
       if (lastCommandShortcutAt - lastContentShortcutAt < 120) {
         return;
       }
-      startSwitcher("command").catch((error) => console.error("Unable to open Firefox Tab Switcher", error));
+      startSwitcher("command").catch((error) => console.error("Unable to open Quick Tab Switcher", error));
     } else if (command === SEARCH_COMMAND) {
-      enterSearchFromCommand().catch((error) => console.error("Unable to search Firefox Tab Switcher tabs", error));
+      enterSearchFromCommand().catch((error) => console.error("Unable to search Quick Tab Switcher tabs", error));
     }
   });
 

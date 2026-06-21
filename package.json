@@ -2,7 +2,7 @@
   "name": "firefox-tab-switcher",
   "version": "0.1.0",
   "private": true,
-  "description": "A Firefox tab switcher with an Alt-Tab-like overlay.",
+  "description": "A browser tab switcher with an Alt-Tab-like overlay.",
   "type": "commonjs",
   "scripts": {
     "test": "node --test",

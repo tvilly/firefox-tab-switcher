@@ -50,7 +50,7 @@
     root.className = "mru-tab-switcher";
     root.tabIndex = -1;
     root.setAttribute("role", "dialog");
-    root.setAttribute("aria-label", "Firefox tab switcher");
+    root.setAttribute("aria-label", "Quick Tab Switcher");
     root.hidden = true;
     const panel = document.createElement("div");
     panel.className = "mru-tab-switcher__panel";
