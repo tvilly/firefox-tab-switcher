@@ -21,7 +21,8 @@
     count: null,
     originalTabId: null,
     modifierReleased: false,
-    wheelRemainder: 0
+    wheelRemainder: 0,
+    isOpen: false
   };
 
   function start(payload) {
@@ -33,11 +34,21 @@
     state.query = "";
     state.searchMode = Boolean(payload.enterSearch);
     state.modifierReleased = false;
+    state.isOpen = true;
 
     ensureDom();
     render();
     state.root.hidden = false;
     state.root.focus({ preventScroll: true });
+  }
+
+  function openOrCycle(payload) {
+    if (state.root && state.isOpen && !state.root.hidden) {
+      move(1);
+      return;
+    }
+
+    start(payload);
   }
 
   function ensureDom() {
@@ -216,11 +227,29 @@
       return;
     }
 
+    if (state.options.enableVimNavigation && !state.searchMode && isVimNavigationKey(event)) {
+      event.preventDefault();
+      event.stopPropagation();
+      move(isKey(event, "K") ? -1 : 1);
+      return;
+    }
+
     if (!state.searchMode && isSearchTrigger(event, searchKey)) {
       event.preventDefault();
       event.stopPropagation();
       enterSearchMode();
     }
+  }
+
+  function isVimNavigationKey(event) {
+    return isKey(event, "J") || isKey(event, "K");
+  }
+
+  function isKey(event, key) {
+    if (event.key && event.key.length === 1 && event.key.toUpperCase() === key) {
+      return true;
+    }
+    return event.code === `Key${key}`;
   }
 
   function isSearchTrigger(event, searchKey) {
@@ -285,6 +314,7 @@
   function finish(activate) {
     const selected = state.visibleTabs[state.selectedIndex];
     state.root.hidden = true;
+    state.isOpen = false;
     browserApi.runtime.sendMessage({ type: "mru-switcher:closed" });
 
     if (activate && selected) {
@@ -299,6 +329,8 @@
   browserApi.runtime.onMessage.addListener((message) => {
     if (message && message.type === "mru-switcher:start") {
       start(message);
+    } else if (message && message.type === "mru-switcher:open-or-cycle") {
+      openOrCycle(message);
     } else if (message && message.type === "mru-switcher:cycle" && state.root && !state.root.hidden) {
       move(message.delta || 1);
     } else if (message && message.type === "mru-switcher:enter-search" && state.root && !state.root.hidden) {

@@ -7,6 +7,7 @@
   const mainShortcut = document.getElementById("main-shortcut");
   const searchKey = document.getElementById("search-key");
   const captureTextInputShortcut = document.getElementById("capture-text-input-shortcut");
+  const enableVimNavigation = document.getElementById("enable-vim-navigation");
   const tabScope = document.getElementById("tab-scope");
   const density = document.getElementById("density");
   const theme = document.getElementById("theme");
@@ -18,6 +19,7 @@
     const options = core.normalizeOptions(stored);
     searchKey.value = options.searchKey;
     captureTextInputShortcut.checked = options.captureTextInputShortcut;
+    enableVimNavigation.checked = options.enableVimNavigation;
     tabScope.value = options.tabScope;
     density.value = options.density;
     theme.value = options.theme;
@@ -33,6 +35,7 @@
       searchKey: searchKey.value,
       mainShortcut: mainShortcut.value,
       captureTextInputShortcut: captureTextInputShortcut.checked,
+      enableVimNavigation: enableVimNavigation.checked,
       tabScope: tabScope.value,
       density: density.value,
       theme: theme.value

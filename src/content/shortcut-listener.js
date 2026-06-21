@@ -72,6 +72,7 @@
     if (
       changes.mainShortcut
       || changes.captureTextInputShortcut
+      || changes.enableVimNavigation
       || changes.searchKey
       || changes.tabScope
       || changes.theme

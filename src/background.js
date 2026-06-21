@@ -16,10 +16,11 @@
     return core.normalizeOptions(stored);
   }
 
-  async function collectTabs(options) {
+  async function collectTabs(options, activeTabId) {
     const query = options.tabScope === "allWindows" ? {} : { currentWindow: true };
     const tabs = await browserApi.tabs.query(query);
-    return core.sortTabsByMostRecent(tabs).map(core.toSwitcherTab);
+    const sortedTabs = core.sortTabsByMostRecent(tabs).map(core.toSwitcherTab);
+    return core.prioritizeActiveTab(sortedTabs, activeTabId);
   }
 
   async function getActiveTab() {
@@ -71,19 +72,10 @@
       return;
     }
 
-    if ((source === "command" || source === "content-shortcut") && activeOverlay && activeOverlay.tabId === activeTab.id) {
-      try {
-        await sendOverlayMessage(activeTab.id, { type: "mru-switcher:cycle", delta: 1 });
-        return;
-      } catch {
-        activeOverlay = null;
-      }
-    }
-
     const options = await getOptions();
-    const tabs = await collectTabs(options);
+    const tabs = await collectTabs(options, activeTab.id);
     const payload = {
-      type: "mru-switcher:start",
+      type: "mru-switcher:open-or-cycle",
       source,
       options,
       originalTabId: activeTab.id,

@@ -9,6 +9,7 @@ A Firefox desktop extension for switching tabs in most-recently-used order with 
 - Release `Alt` to activate the highlighted tab.
 - Press `Alt+S` while the switcher is open to search tabs by title and URL.
 - Mouse wheel moves the highlight without activating tabs.
+- Optional vim-style `j`/`k` navigation moves down/up the tab list.
 - Optional text-field capture lets `Alt+Q` work even when focus is inside a page text box.
 
 ## Development

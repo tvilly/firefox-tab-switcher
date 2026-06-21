@@ -40,11 +40,19 @@ test("initialSelectedIndex prefers the second most-recent tab when possible", ()
   assert.equal(core.initialSelectedIndex([{ id: 1 }, { id: 2 }]), 1);
 });
 
+test("prioritizeActiveTab moves the active tab to the front without disturbing other tabs", () => {
+  const tabs = [{ id: 1 }, { id: 2 }, { id: 3 }];
+  assert.deepEqual(core.prioritizeActiveTab(tabs, 2).map((tab) => tab.id), [2, 1, 3]);
+  assert.deepEqual(core.prioritizeActiveTab(tabs, 1).map((tab) => tab.id), [1, 2, 3]);
+  assert.deepEqual(core.prioritizeActiveTab(tabs, 9).map((tab) => tab.id), [1, 2, 3]);
+});
+
 test("normalizeOptions keeps valid preferences and repairs invalid values", () => {
   assert.deepEqual(core.normalizeOptions({
     mainShortcut: "Alt+K",
     searchKey: "K",
     captureTextInputShortcut: true,
+    enableVimNavigation: true,
     tabScope: "allWindows",
     density: "compact",
     theme: "dark"
@@ -52,6 +60,7 @@ test("normalizeOptions keeps valid preferences and repairs invalid values", () =
     mainShortcut: "Alt+K",
     searchKey: "k",
     captureTextInputShortcut: true,
+    enableVimNavigation: true,
     tabScope: "allWindows",
     density: "compact",
     theme: "dark"

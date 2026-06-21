@@ -5,6 +5,7 @@
     mainShortcut: "Alt+Q",
     searchKey: "s",
     captureTextInputShortcut: false,
+    enableVimNavigation: false,
     tabScope: "currentWindow",
     theme: "system",
     density: "comfortable"
@@ -19,11 +20,12 @@
     const mainShortcut = normalizeMainShortcut(source.mainShortcut);
     const searchKey = normalizeSearchKey(source.searchKey);
     const captureTextInputShortcut = source.captureTextInputShortcut === true;
+    const enableVimNavigation = source.enableVimNavigation === true;
     const tabScope = VALID_TAB_SCOPES.has(source.tabScope) ? source.tabScope : DEFAULT_OPTIONS.tabScope;
     const theme = VALID_THEMES.has(source.theme) ? source.theme : DEFAULT_OPTIONS.theme;
     const density = VALID_DENSITIES.has(source.density) ? source.density : DEFAULT_OPTIONS.density;
 
-    return { mainShortcut, searchKey, captureTextInputShortcut, tabScope, theme, density };
+    return { mainShortcut, searchKey, captureTextInputShortcut, enableVimNavigation, tabScope, theme, density };
   }
 
   function normalizeSearchKey(value) {
@@ -172,6 +174,22 @@
     return tabs.length > 1 ? 1 : 0;
   }
 
+  function prioritizeActiveTab(tabs, activeTabId) {
+    if (!Array.isArray(tabs) || !Number.isInteger(activeTabId)) {
+      return Array.isArray(tabs) ? tabs.slice() : [];
+    }
+
+    const activeIndex = tabs.findIndex((tab) => tab.id === activeTabId);
+    if (activeIndex <= 0) {
+      return tabs.slice();
+    }
+
+    const orderedTabs = tabs.slice();
+    const [activeTab] = orderedTabs.splice(activeIndex, 1);
+    orderedTabs.unshift(activeTab);
+    return orderedTabs;
+  }
+
   function wrapIndex(index, length) {
     if (!length) {
       return -1;
@@ -227,6 +245,7 @@
     normalizeMainShortcut,
     normalizeOptions,
     normalizeSearchKey,
+    prioritizeActiveTab,
     searchKeyToShortcut,
     sortTabsByMostRecent,
     toSwitcherTab,
