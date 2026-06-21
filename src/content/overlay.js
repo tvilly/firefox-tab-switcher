@@ -284,7 +284,7 @@
       return;
     }
 
-    const selectedTop = selected.offsetTop;
+    const selectedTop = offsetTopWithinList(selected);
     const selectedBottom = selectedTop + selected.offsetHeight;
     const visibleTop = state.list.scrollTop;
     const visibleBottom = visibleTop + state.list.clientHeight;
@@ -294,6 +294,22 @@
     } else if (selectedBottom > visibleBottom) {
       state.list.scrollTop = selectedBottom - state.list.clientHeight;
     }
+  }
+
+  function offsetTopWithinList(element) {
+    let offset = 0;
+    let node = element;
+
+    while (node && node !== state.list) {
+      offset += node.offsetTop;
+      node = node.offsetParent;
+    }
+
+    if (node === state.list) {
+      return offset;
+    }
+
+    return element.getBoundingClientRect().top - state.list.getBoundingClientRect().top + state.list.scrollTop;
   }
 
   function formatUrl(url) {

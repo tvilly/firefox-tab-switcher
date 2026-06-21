@@ -101,6 +101,7 @@
 }
 
 #mru-tab-switcher .mru-tab-switcher__list {
+  position: relative;
   min-height: 0;
   height: 100%;
   max-height: 100%;
