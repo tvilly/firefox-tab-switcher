@@ -32,11 +32,15 @@
 }
 
 #mru-tab-switcher .mru-tab-switcher__header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   padding: 14px 16px 10px;
+  background: #161b22;
   border-bottom: 1px solid #293242;
 }
 
@@ -86,6 +90,7 @@
   margin: 0;
   padding: 8px;
   overflow: auto;
+  overscroll-behavior: contain;
   list-style: none;
 }
 
@@ -154,6 +159,11 @@
     color: #111827;
     background: #ffffff;
     border-color: #d0d7de;
+  }
+
+  #mru-tab-switcher[data-theme="system"] .mru-tab-switcher__header,
+  #mru-tab-switcher[data-theme="light"] .mru-tab-switcher__header {
+    background: #ffffff;
   }
 
   #mru-tab-switcher[data-theme="system"] .mru-tab-switcher__header,

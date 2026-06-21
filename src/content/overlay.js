@@ -167,9 +167,24 @@
       state.list.append(item);
     });
 
+    keepSelectedItemVisible();
+  }
+
+  function keepSelectedItemVisible() {
     const selected = state.list.querySelector(".is-selected");
-    if (selected) {
-      selected.scrollIntoView({ block: "nearest" });
+    if (!selected) {
+      return;
+    }
+
+    const selectedTop = selected.offsetTop;
+    const selectedBottom = selectedTop + selected.offsetHeight;
+    const visibleTop = state.list.scrollTop;
+    const visibleBottom = visibleTop + state.list.clientHeight;
+
+    if (selectedTop < visibleTop) {
+      state.list.scrollTop = selectedTop;
+    } else if (selectedBottom > visibleBottom) {
+      state.list.scrollTop = selectedBottom - state.list.clientHeight;
     }
   }
 
