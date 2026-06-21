@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MRU Tab Switcher</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Switch tabs</h1>
+        <button id="open-options" type="button">Options</button>
+      </header>
+      <label class="search">
+        <span>Search</span>
+        <input id="search" type="search" autocomplete="off" spellcheck="false">
+      </label>
+      <ol id="tabs" role="listbox"></ol>
+      <button id="try-overlay" type="button">Open overlay</button>
+    </main>
+    <script src="../shared/core.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

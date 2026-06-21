@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MRU Tab Switcher Options</title>
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body>
+    <main>
+      <h1>MRU Tab Switcher</h1>
+      <form id="options-form">
+        <label>
+          <span>Main shortcut</span>
+          <input id="main-shortcut" name="mainShortcut" type="text" placeholder="Alt+Q">
+        </label>
+        <label>
+          <span>Search key</span>
+          <input id="search-key" name="searchKey" type="text" maxlength="1" autocomplete="off" spellcheck="false">
+        </label>
+        <label class="checkbox-row">
+          <span>Text fields</span>
+          <span class="checkbox-control">
+            <input id="capture-text-input-shortcut" name="captureTextInputShortcut" type="checkbox">
+            <span>Run the main shortcut while typing in text boxes</span>
+          </span>
+        </label>
+        <label>
+          <span>Tab scope</span>
+          <select id="tab-scope" name="tabScope">
+            <option value="currentWindow">Current window</option>
+            <option value="allWindows">All windows</option>
+          </select>
+        </label>
+        <label>
+          <span>Density</span>
+          <select id="density" name="density">
+            <option value="comfortable">Comfortable</option>
+            <option value="compact">Compact</option>
+          </select>
+        </label>
+        <label>
+          <span>Theme</span>
+          <select id="theme" name="theme">
+            <option value="system">System</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+        <div class="actions">
+          <button type="submit">Save</button>
+          <button id="shortcut-settings" type="button">Firefox shortcut settings</button>
+        </div>
+        <p id="status" role="status"></p>
+      </form>
+    </main>
+    <script src="../shared/core.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>
