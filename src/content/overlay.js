@@ -284,13 +284,15 @@
       return;
     }
 
-    const selectedRect = selected.getBoundingClientRect();
-    const listRect = state.list.getBoundingClientRect();
+    const selectedTop = selected.offsetTop;
+    const selectedBottom = selectedTop + selected.offsetHeight;
+    const visibleTop = state.list.scrollTop;
+    const visibleBottom = visibleTop + state.list.clientHeight;
 
-    if (selectedRect.top < listRect.top) {
-      state.list.scrollTop += selectedRect.top - listRect.top;
-    } else if (selectedRect.bottom > listRect.bottom) {
-      state.list.scrollTop += selectedRect.bottom - listRect.bottom;
+    if (selectedTop < visibleTop) {
+      state.list.scrollTop = selectedTop;
+    } else if (selectedBottom > visibleBottom) {
+      state.list.scrollTop = selectedBottom - state.list.clientHeight;
     }
   }
 
