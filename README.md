@@ -9,6 +9,7 @@ A Firefox desktop extension for switching tabs in most-recently-used order with 
 - Release `Alt` to activate the highlighted tab.
 - Press `Alt+S` while the switcher is open to search tabs by title and URL.
 - Mouse wheel moves the highlight without activating tabs.
+- Optional preview layout shows a live screenshot preview for the selected tab.
 - Optional vim-style `j`/`k` navigation moves down/up the tab list.
 - Optional text-field capture lets `Alt+Q` work even when focus is inside a page text box.
 
@@ -32,6 +33,8 @@ npm run build
 ```
 
 The packaged extension is written to `web-ext-artifacts/`.
+
+Live preview mode requests optional all-sites host permission because Firefox requires that permission to capture screenshots of inactive tabs.
 
 ## Install Note
 

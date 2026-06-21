@@ -6,6 +6,7 @@
     searchKey: "s",
     captureTextInputShortcut: false,
     enableVimNavigation: false,
+    displayMode: "list",
     tabScope: "currentWindow",
     theme: "system",
     density: "comfortable"
@@ -13,6 +14,7 @@
 
   const VALID_THEMES = new Set(["system", "light", "dark"]);
   const VALID_DENSITIES = new Set(["comfortable", "compact"]);
+  const VALID_DISPLAY_MODES = new Set(["list", "preview"]);
   const VALID_TAB_SCOPES = new Set(["currentWindow", "allWindows"]);
 
   function normalizeOptions(input) {
@@ -21,11 +23,12 @@
     const searchKey = normalizeSearchKey(source.searchKey);
     const captureTextInputShortcut = source.captureTextInputShortcut === true;
     const enableVimNavigation = source.enableVimNavigation === true;
+    const displayMode = VALID_DISPLAY_MODES.has(source.displayMode) ? source.displayMode : DEFAULT_OPTIONS.displayMode;
     const tabScope = VALID_TAB_SCOPES.has(source.tabScope) ? source.tabScope : DEFAULT_OPTIONS.tabScope;
     const theme = VALID_THEMES.has(source.theme) ? source.theme : DEFAULT_OPTIONS.theme;
     const density = VALID_DENSITIES.has(source.density) ? source.density : DEFAULT_OPTIONS.density;
 
-    return { mainShortcut, searchKey, captureTextInputShortcut, enableVimNavigation, tabScope, theme, density };
+    return { mainShortcut, searchKey, captureTextInputShortcut, enableVimNavigation, displayMode, tabScope, theme, density };
   }
 
   function normalizeSearchKey(value) {

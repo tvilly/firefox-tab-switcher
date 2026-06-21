@@ -23,6 +23,9 @@
     "storage",
     "tabs"
   ],
+  "optional_host_permissions": [
+    "<all_urls>"
+  ],
   "background": {
     "scripts": [
       "shared/core.js",

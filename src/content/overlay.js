@@ -19,6 +19,13 @@
     searchWrap: null,
     searchInput: null,
     count: null,
+    previewPane: null,
+    previewImage: null,
+    previewFallback: null,
+    previewTitle: null,
+    previewUrl: null,
+    previewCache: new Map(),
+    previewRequestId: 0,
     originalTabId: null,
     modifierReleased: false,
     wheelRemainder: 0,
@@ -35,6 +42,8 @@
     state.searchMode = Boolean(payload.enterSearch);
     state.modifierReleased = false;
     state.isOpen = true;
+    state.previewCache.clear();
+    state.previewRequestId += 1;
 
     ensureDom();
     render();
@@ -92,9 +101,42 @@
     list.className = "mru-tab-switcher__list";
     list.setAttribute("role", "listbox");
 
+    const body = document.createElement("div");
+    body.className = "mru-tab-switcher__body";
+
+    const previewPane = document.createElement("aside");
+    previewPane.className = "mru-tab-switcher__preview";
+    previewPane.setAttribute("aria-label", "Tab preview");
+
+    const previewFrame = document.createElement("div");
+    previewFrame.className = "mru-tab-switcher__preview-frame";
+
+    const previewImage = document.createElement("img");
+    previewImage.className = "mru-tab-switcher__preview-image";
+    previewImage.alt = "";
+    previewImage.hidden = true;
+
+    const previewFallback = document.createElement("div");
+    previewFallback.className = "mru-tab-switcher__preview-fallback";
+    previewFallback.textContent = "Preview unavailable";
+
+    const previewMeta = document.createElement("div");
+    previewMeta.className = "mru-tab-switcher__preview-meta";
+
+    const previewTitle = document.createElement("div");
+    previewTitle.className = "mru-tab-switcher__preview-title";
+
+    const previewUrl = document.createElement("div");
+    previewUrl.className = "mru-tab-switcher__preview-url";
+
+    previewFrame.append(previewImage, previewFallback);
+    previewMeta.append(previewTitle, previewUrl);
+    previewPane.append(previewFrame, previewMeta);
+    body.append(list, previewPane);
+
     header.append(title, count);
     searchWrap.append(searchLabel, searchInput);
-    panel.append(header, searchWrap, list);
+    panel.append(header, searchWrap, body);
     root.append(panel);
 
     document.documentElement.append(root);
@@ -103,6 +145,11 @@
     state.searchWrap = searchWrap;
     state.searchInput = searchInput;
     state.count = count;
+    state.previewPane = previewPane;
+    state.previewImage = previewImage;
+    state.previewFallback = previewFallback;
+    state.previewTitle = previewTitle;
+    state.previewUrl = previewUrl;
 
     document.addEventListener("keydown", handleKeyDown, true);
     document.addEventListener("keyup", handleKeyUp, true);
@@ -113,6 +160,7 @@
   function render() {
     state.root.dataset.theme = state.options.theme;
     state.root.dataset.density = state.options.density;
+    state.root.dataset.displayMode = state.options.displayMode;
     state.searchWrap.hidden = !state.searchMode;
     state.count.textContent = `${state.visibleTabs.length} tab${state.visibleTabs.length === 1 ? "" : "s"}`;
 
@@ -168,6 +216,78 @@
     });
 
     keepSelectedItemVisible();
+    updatePreviewPane();
+  }
+
+  function updatePreviewPane() {
+    if (state.options.displayMode !== "preview" || !state.previewPane) {
+      return;
+    }
+
+    const selected = state.visibleTabs[state.selectedIndex];
+    if (!selected) {
+      showPreviewFallback("No tab selected");
+      state.previewTitle.textContent = "";
+      state.previewUrl.textContent = "";
+      return;
+    }
+
+    state.previewTitle.textContent = selected.title || "Untitled";
+    state.previewUrl.textContent = formatUrl(selected.url);
+
+    const cachedPreview = state.previewCache.get(selected.id);
+    if (cachedPreview && cachedPreview.ok) {
+      showPreviewImage(cachedPreview.dataUrl);
+      return;
+    }
+
+    showPreviewFallback(cachedPreview ? previewFailureText(cachedPreview) : "Loading preview...");
+    requestPreview(selected.id);
+  }
+
+  function requestPreview(tabId) {
+    const requestId = ++state.previewRequestId;
+    browserApi.runtime
+      .sendMessage({ type: "mru-switcher:get-preview", tabId })
+      .then((result) => {
+        state.previewCache.set(tabId, result || { ok: false, reason: "capture" });
+        if (!state.root || state.root.hidden || state.options.displayMode !== "preview") {
+          return;
+        }
+        const selected = state.visibleTabs[state.selectedIndex];
+        if (!selected || selected.id !== tabId || requestId !== state.previewRequestId) {
+          return;
+        }
+        if (result && result.ok) {
+          showPreviewImage(result.dataUrl);
+        } else {
+          showPreviewFallback(previewFailureText(result));
+        }
+      })
+      .catch(() => {
+        state.previewCache.set(tabId, { ok: false, reason: "capture" });
+        showPreviewFallback("Preview unavailable");
+      });
+  }
+
+  function showPreviewImage(dataUrl) {
+    state.previewImage.src = dataUrl;
+    state.previewImage.hidden = false;
+    state.previewFallback.hidden = true;
+  }
+
+  function showPreviewFallback(text) {
+    state.previewImage.hidden = true;
+    state.previewImage.removeAttribute("src");
+    state.previewFallback.hidden = false;
+    state.previewFallback.textContent = text;
+  }
+
+  function previewFailureText(result) {
+    if (result && result.reason === "permission") {
+      return "Grant live preview permission in settings";
+    }
+    return "Preview unavailable";
   }
 
   function keepSelectedItemVisible() {
@@ -323,6 +443,7 @@
 
   function move(delta) {
     state.selectedIndex = core.moveSelection(state.selectedIndex, delta, state.visibleTabs.length);
+    state.previewRequestId += 1;
     render();
   }
 

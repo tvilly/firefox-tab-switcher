@@ -73,6 +73,7 @@
       changes.mainShortcut
       || changes.captureTextInputShortcut
       || changes.enableVimNavigation
+      || changes.displayMode
       || changes.searchKey
       || changes.tabScope
       || changes.theme

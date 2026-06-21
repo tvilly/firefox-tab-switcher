@@ -9,6 +9,7 @@
   const captureTextInputShortcut = document.getElementById("capture-text-input-shortcut");
   const enableVimNavigation = document.getElementById("enable-vim-navigation");
   const tabScope = document.getElementById("tab-scope");
+  const displayMode = document.getElementById("display-mode");
   const density = document.getElementById("density");
   const theme = document.getElementById("theme");
   const status = document.getElementById("status");
@@ -21,6 +22,7 @@
     captureTextInputShortcut.checked = options.captureTextInputShortcut;
     enableVimNavigation.checked = options.enableVimNavigation;
     tabScope.value = options.tabScope;
+    displayMode.value = options.displayMode;
     density.value = options.density;
     theme.value = options.theme;
 
@@ -37,10 +39,12 @@
       captureTextInputShortcut: captureTextInputShortcut.checked,
       enableVimNavigation: enableVimNavigation.checked,
       tabScope: tabScope.value,
+      displayMode: displayMode.value,
       density: density.value,
       theme: theme.value
     });
 
+    const previewPermissionGranted = await ensurePreviewPermission(options.displayMode);
     await browserApi.storage.local.set(options);
 
     if (options.mainShortcut) {
@@ -65,8 +69,27 @@
       return;
     }
 
-    setStatus("Options saved.");
+    setStatus(previewPermissionGranted === false
+      ? "Options saved. Live previews need all-sites permission before screenshots can appear."
+      : "Options saved.");
   });
+
+  async function ensurePreviewPermission(displayModeValue) {
+    if (displayModeValue !== "preview" || !browserApi.permissions || !browserApi.permissions.request) {
+      return null;
+    }
+
+    const alreadyGranted = await browserApi.permissions
+      .contains({ origins: ["<all_urls>"] })
+      .catch(() => false);
+    if (alreadyGranted) {
+      return true;
+    }
+
+    return browserApi.permissions
+      .request({ origins: ["<all_urls>"] })
+      .catch(() => false);
+  }
 
   shortcutSettings.addEventListener("click", () => {
     if (browserApi.commands.openShortcutSettings) {

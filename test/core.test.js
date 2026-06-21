@@ -53,6 +53,7 @@ test("normalizeOptions keeps valid preferences and repairs invalid values", () =
     searchKey: "K",
     captureTextInputShortcut: true,
     enableVimNavigation: true,
+    displayMode: "preview",
     tabScope: "allWindows",
     density: "compact",
     theme: "dark"
@@ -61,6 +62,7 @@ test("normalizeOptions keeps valid preferences and repairs invalid values", () =
     searchKey: "k",
     captureTextInputShortcut: true,
     enableVimNavigation: true,
+    displayMode: "preview",
     tabScope: "allWindows",
     density: "compact",
     theme: "dark"

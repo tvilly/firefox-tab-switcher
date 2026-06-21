@@ -66,6 +66,30 @@
     await browserApi.tabs.sendMessage(tabId, message);
   }
 
+  async function captureTabPreview(tabId) {
+    const hasPermission = await browserApi.permissions
+      .contains({ origins: ["<all_urls>"] })
+      .catch(() => false);
+
+    if (!hasPermission) {
+      return { ok: false, reason: "permission" };
+    }
+
+    try {
+      const dataUrl = await browserApi.tabs.captureTab(tabId, {
+        format: "jpeg",
+        quality: 45
+      });
+      return { ok: true, dataUrl };
+    } catch (error) {
+      return {
+        ok: false,
+        reason: "capture",
+        message: error && error.message ? error.message : "Unable to capture preview"
+      };
+    }
+  }
+
   async function startSwitcher(source) {
     const activeTab = await getActiveTab();
     if (!activeTab || !Number.isInteger(activeTab.id)) {
@@ -144,6 +168,10 @@
 
     if (message.type === "mru-switcher:clear-fallback") {
       return browserApi.storage.session.remove("fallbackPayload");
+    }
+
+    if (message.type === "mru-switcher:get-preview" && Number.isInteger(message.tabId)) {
+      return captureTabPreview(message.tabId);
     }
 
     if (message.type === "mru-switcher:content-shortcut") {
