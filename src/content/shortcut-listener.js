@@ -74,6 +74,7 @@
       || changes.captureTextInputShortcut
       || changes.enableVimNavigation
       || changes.displayMode
+      || changes.scrollSensitivity
       || changes.searchKey
       || changes.tabScope
       || changes.theme

@@ -10,6 +10,8 @@
   const enableVimNavigation = document.getElementById("enable-vim-navigation");
   const tabScope = document.getElementById("tab-scope");
   const displayMode = document.getElementById("display-mode");
+  const scrollSensitivity = document.getElementById("scroll-sensitivity");
+  const scrollSensitivityValue = document.getElementById("scroll-sensitivity-value");
   const density = document.getElementById("density");
   const theme = document.getElementById("theme");
   const status = document.getElementById("status");
@@ -23,6 +25,8 @@
     enableVimNavigation.checked = options.enableVimNavigation;
     tabScope.value = options.tabScope;
     displayMode.value = options.displayMode;
+    scrollSensitivity.value = options.scrollSensitivity;
+    updateScrollSensitivityLabel();
     density.value = options.density;
     theme.value = options.theme;
 
@@ -40,6 +44,7 @@
       enableVimNavigation: enableVimNavigation.checked,
       tabScope: tabScope.value,
       displayMode: displayMode.value,
+      scrollSensitivity: scrollSensitivity.value,
       density: density.value,
       theme: theme.value
     });
@@ -73,6 +78,14 @@
       ? "Options saved. Live previews need all-sites permission before screenshots can appear."
       : "Options saved.");
   });
+
+  scrollSensitivity.addEventListener("input", updateScrollSensitivityLabel);
+
+  function updateScrollSensitivityLabel() {
+    const value = core.normalizeScrollSensitivity(scrollSensitivity.value);
+    scrollSensitivity.value = value;
+    scrollSensitivityValue.textContent = String(value);
+  }
 
   async function ensurePreviewPermission(displayModeValue) {
     if (displayModeValue !== "preview" || !browserApi.permissions || !browserApi.permissions.request) {

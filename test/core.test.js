@@ -54,6 +54,7 @@ test("normalizeOptions keeps valid preferences and repairs invalid values", () =
     captureTextInputShortcut: true,
     enableVimNavigation: true,
     displayMode: "preview",
+    scrollSensitivity: 2,
     tabScope: "allWindows",
     density: "compact",
     theme: "dark"
@@ -63,6 +64,7 @@ test("normalizeOptions keeps valid preferences and repairs invalid values", () =
     captureTextInputShortcut: true,
     enableVimNavigation: true,
     displayMode: "preview",
+    scrollSensitivity: 2,
     tabScope: "allWindows",
     density: "compact",
     theme: "dark"
@@ -80,6 +82,14 @@ test("searchKeyToShortcut maps the configured search key to an Alt shortcut", ()
   assert.equal(core.searchKeyToShortcut("s"), "Alt+S");
   assert.equal(core.searchKeyToShortcut("K"), "Alt+K");
   assert.equal(core.searchKeyToShortcut("bad"), "Alt+S");
+});
+
+test("normalizeScrollSensitivity clamps to the supported range", () => {
+  assert.equal(core.normalizeScrollSensitivity("1"), 1);
+  assert.equal(core.normalizeScrollSensitivity(5.4), 5);
+  assert.equal(core.normalizeScrollSensitivity(99), 10);
+  assert.equal(core.normalizeScrollSensitivity(-3), 1);
+  assert.equal(core.normalizeScrollSensitivity("nope"), core.DEFAULT_OPTIONS.scrollSensitivity);
 });
 
 test("normalizeMainShortcut accepts single-key modifier shortcuts", () => {

@@ -55,6 +55,23 @@ label span {
   margin: 0;
 }
 
+.range-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 4ch;
+  align-items: center;
+  gap: 12px;
+}
+
+.range-control input {
+  padding: 0;
+}
+
+.range-control output {
+  color: #57606a;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
 input,
 select {
   width: 100%;

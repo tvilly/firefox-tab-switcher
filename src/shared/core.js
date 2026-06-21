@@ -7,6 +7,7 @@
     captureTextInputShortcut: false,
     enableVimNavigation: false,
     displayMode: "list",
+    scrollSensitivity: 5,
     tabScope: "currentWindow",
     theme: "system",
     density: "comfortable"
@@ -24,11 +25,22 @@
     const captureTextInputShortcut = source.captureTextInputShortcut === true;
     const enableVimNavigation = source.enableVimNavigation === true;
     const displayMode = VALID_DISPLAY_MODES.has(source.displayMode) ? source.displayMode : DEFAULT_OPTIONS.displayMode;
+    const scrollSensitivity = normalizeScrollSensitivity(source.scrollSensitivity);
     const tabScope = VALID_TAB_SCOPES.has(source.tabScope) ? source.tabScope : DEFAULT_OPTIONS.tabScope;
     const theme = VALID_THEMES.has(source.theme) ? source.theme : DEFAULT_OPTIONS.theme;
     const density = VALID_DENSITIES.has(source.density) ? source.density : DEFAULT_OPTIONS.density;
 
-    return { mainShortcut, searchKey, captureTextInputShortcut, enableVimNavigation, displayMode, tabScope, theme, density };
+    return {
+      mainShortcut,
+      searchKey,
+      captureTextInputShortcut,
+      enableVimNavigation,
+      displayMode,
+      scrollSensitivity,
+      tabScope,
+      theme,
+      density
+    };
   }
 
   function normalizeSearchKey(value) {
@@ -47,6 +59,15 @@
   function searchKeyToShortcut(value) {
     const searchKey = normalizeSearchKey(value);
     return `Alt+${searchKey.toUpperCase()}`;
+  }
+
+  function normalizeScrollSensitivity(value) {
+    const numericValue = Number(value);
+    if (!Number.isFinite(numericValue)) {
+      return DEFAULT_OPTIONS.scrollSensitivity;
+    }
+
+    return Math.min(10, Math.max(1, Math.round(numericValue)));
   }
 
   function normalizeMainShortcut(value) {
@@ -248,6 +269,7 @@
     normalizeMainShortcut,
     normalizeOptions,
     normalizeSearchKey,
+    normalizeScrollSensitivity,
     prioritizeActiveTab,
     searchKeyToShortcut,
     sortTabsByMostRecent,

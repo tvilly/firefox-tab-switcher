@@ -413,12 +413,18 @@
     event.stopPropagation();
     state.wheelRemainder += event.deltaY;
 
-    if (Math.abs(state.wheelRemainder) < 8) {
+    const threshold = scrollThreshold();
+    if (Math.abs(state.wheelRemainder) < threshold) {
       return;
     }
 
     move(state.wheelRemainder > 0 ? 1 : -1);
     state.wheelRemainder = 0;
+  }
+
+  function scrollThreshold() {
+    const sensitivity = core.normalizeScrollSensitivity(state.options.scrollSensitivity);
+    return 8 + (5 - sensitivity) * 12;
   }
 
   function enterSearchMode() {
