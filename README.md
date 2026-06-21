@@ -1,4 +1,4 @@
-# MRU Tab Switcher
+# Firefox Tab Switcher
 
 A Firefox desktop extension for switching tabs in most-recently-used order with an Alt-Tab-like overlay.
 

@@ -127,9 +127,9 @@
       if (lastCommandShortcutAt - lastContentShortcutAt < 120) {
         return;
       }
-      startSwitcher("command").catch((error) => console.error("Unable to open MRU switcher", error));
+      startSwitcher("command").catch((error) => console.error("Unable to open Firefox Tab Switcher", error));
     } else if (command === SEARCH_COMMAND) {
-      enterSearchFromCommand().catch((error) => console.error("Unable to search MRU tabs", error));
+      enterSearchFromCommand().catch((error) => console.error("Unable to search Firefox Tab Switcher tabs", error));
     }
   });
 

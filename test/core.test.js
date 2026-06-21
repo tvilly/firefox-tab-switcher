@@ -34,7 +34,7 @@ test("moveSelection wraps forward and backward", () => {
   assert.equal(core.moveSelection(0, 1, 0), -1);
 });
 
-test("initialSelectedIndex prefers the second MRU tab when possible", () => {
+test("initialSelectedIndex prefers the second most-recent tab when possible", () => {
   assert.equal(core.initialSelectedIndex([]), 0);
   assert.equal(core.initialSelectedIndex([{ id: 1 }]), 0);
   assert.equal(core.initialSelectedIndex([{ id: 1 }, { id: 2 }]), 1);
