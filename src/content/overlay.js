@@ -26,6 +26,8 @@
     previewUrl: null,
     previewCache: new Map(),
     previewRequestId: 0,
+    lastMouseX: null,
+    lastMouseY: null,
     originalTabId: null,
     modifierReleased: false,
     wheelRemainder: 0,
@@ -207,7 +209,12 @@
 
       text.append(title, url);
       item.append(icon, text);
-      item.addEventListener("mouseenter", () => {
+      item.addEventListener("mousemove", (event) => {
+        if (event.clientX === state.lastMouseX && event.clientY === state.lastMouseY) {
+          return;
+        }
+        state.lastMouseX = event.clientX;
+        state.lastMouseY = event.clientY;
         state.selectedIndex = index;
         render();
       });
