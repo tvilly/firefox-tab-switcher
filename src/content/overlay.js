@@ -22,8 +22,6 @@
     previewPane: null,
     previewImage: null,
     previewFallback: null,
-    previewTitle: null,
-    previewUrl: null,
     previewCache: new Map(),
     previewRequestId: 0,
     lastMouseX: null,
@@ -122,18 +120,8 @@
     previewFallback.className = "mru-tab-switcher__preview-fallback";
     previewFallback.textContent = "Preview unavailable";
 
-    const previewMeta = document.createElement("div");
-    previewMeta.className = "mru-tab-switcher__preview-meta";
-
-    const previewTitle = document.createElement("div");
-    previewTitle.className = "mru-tab-switcher__preview-title";
-
-    const previewUrl = document.createElement("div");
-    previewUrl.className = "mru-tab-switcher__preview-url";
-
     previewFrame.append(previewImage, previewFallback);
-    previewMeta.append(previewTitle, previewUrl);
-    previewPane.append(previewFrame, previewMeta);
+    previewPane.append(previewFrame);
     body.append(list, previewPane);
 
     header.append(title, count);
@@ -150,8 +138,6 @@
     state.previewPane = previewPane;
     state.previewImage = previewImage;
     state.previewFallback = previewFallback;
-    state.previewTitle = previewTitle;
-    state.previewUrl = previewUrl;
 
     document.addEventListener("keydown", handleKeyDown, true);
     document.addEventListener("keyup", handleKeyUp, true);
@@ -234,13 +220,8 @@
     const selected = state.visibleTabs[state.selectedIndex];
     if (!selected) {
       showPreviewFallback("No tab selected");
-      state.previewTitle.textContent = "";
-      state.previewUrl.textContent = "";
       return;
     }
-
-    state.previewTitle.textContent = selected.title || "Untitled";
-    state.previewUrl.textContent = formatUrl(selected.url);
 
     const cachedPreview = state.previewCache.get(selected.id);
     if (cachedPreview && cachedPreview.ok) {

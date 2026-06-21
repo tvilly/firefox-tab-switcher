@@ -112,8 +112,7 @@
   min-width: 0;
   min-height: 0;
   display: none;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: 12px;
+  grid-template-rows: minmax(0, 1fr);
   padding: 12px;
   border-left: 1px solid #293242;
   background: #10151d;
@@ -144,29 +143,6 @@
   padding: 16px;
   color: #a7b1c2;
   text-align: center;
-}
-
-#mru-tab-switcher .mru-tab-switcher__preview-meta {
-  min-width: 0;
-  display: grid;
-  gap: 4px;
-}
-
-#mru-tab-switcher .mru-tab-switcher__preview-title,
-#mru-tab-switcher .mru-tab-switcher__preview-url {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-#mru-tab-switcher .mru-tab-switcher__preview-title {
-  font-weight: 650;
-}
-
-#mru-tab-switcher .mru-tab-switcher__preview-url {
-  color: #a7b1c2;
-  font-size: 12px;
 }
 
 #mru-tab-switcher .mru-tab-switcher__item {
@@ -264,12 +240,10 @@
   #mru-tab-switcher[data-theme="system"] .mru-tab-switcher__url,
   #mru-tab-switcher[data-theme="system"] .mru-tab-switcher__empty,
   #mru-tab-switcher[data-theme="system"] .mru-tab-switcher__preview-fallback,
-  #mru-tab-switcher[data-theme="system"] .mru-tab-switcher__preview-url,
   #mru-tab-switcher[data-theme="light"] .mru-tab-switcher__count,
   #mru-tab-switcher[data-theme="light"] .mru-tab-switcher__url,
   #mru-tab-switcher[data-theme="light"] .mru-tab-switcher__empty,
-  #mru-tab-switcher[data-theme="light"] .mru-tab-switcher__preview-fallback,
-  #mru-tab-switcher[data-theme="light"] .mru-tab-switcher__preview-url {
+  #mru-tab-switcher[data-theme="light"] .mru-tab-switcher__preview-fallback {
     color: #57606a;
   }
 
