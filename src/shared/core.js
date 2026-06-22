@@ -4,6 +4,7 @@
   const DEFAULT_OPTIONS = Object.freeze({
     mainShortcut: "Alt+Q",
     searchKey: "s",
+    closeKey: "w",
     captureTextInputShortcut: false,
     enableVimNavigation: false,
     displayMode: "list",
@@ -22,6 +23,7 @@
     const source = input && typeof input === "object" ? input : {};
     const mainShortcut = normalizeMainShortcut(source.mainShortcut);
     const searchKey = normalizeSearchKey(source.searchKey);
+    const closeKey = normalizeSearchKey(source.closeKey || DEFAULT_OPTIONS.closeKey);
     const captureTextInputShortcut = source.captureTextInputShortcut === true;
     const enableVimNavigation = source.enableVimNavigation === true;
     const displayMode = VALID_DISPLAY_MODES.has(source.displayMode) ? source.displayMode : DEFAULT_OPTIONS.displayMode;
@@ -33,6 +35,7 @@
     return {
       mainShortcut,
       searchKey,
+      closeKey,
       captureTextInputShortcut,
       enableVimNavigation,
       displayMode,

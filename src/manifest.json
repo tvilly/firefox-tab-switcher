@@ -64,6 +64,12 @@
         "default": "Alt+S"
       },
       "description": "Search tabs in Quick Tab Switcher"
+    },
+    "close-selected-tab": {
+      "suggested_key": {
+        "default": "Alt+W"
+      },
+      "description": "Close the selected tab in Quick Tab Switcher"
     }
   },
   "web_accessible_resources": [

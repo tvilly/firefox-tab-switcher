@@ -5,6 +5,7 @@
   const core = global.TabSwitcherCore;
   const OPEN_COMMAND = "open-switcher";
   const SEARCH_COMMAND = "enter-search";
+  const CLOSE_COMMAND = "close-selected-tab";
   const OVERLAY_FILES = ["shared/core.js", "content/overlay.js"];
   const OVERLAY_CSS = ["content/overlay.css"];
   let activeOverlay = null;
@@ -42,6 +43,10 @@
       await browserApi.windows.update(windowId, { focused: true }).catch(() => undefined);
     }
     await browserApi.tabs.update(tabId, { active: true });
+  }
+
+  async function closeTab(tabId) {
+    await browserApi.tabs.remove(tabId);
   }
 
   async function injectOverlay(tabId) {
@@ -148,6 +153,17 @@
     await startSwitcher("search-command");
   }
 
+  async function closeSelectedFromCommand() {
+    const activeTab = await getActiveTab();
+    if (activeTab && activeOverlay && activeOverlay.tabId === activeTab.id) {
+      try {
+        await sendOverlayMessage(activeTab.id, { type: "mru-switcher:close-selected" });
+      } catch {
+        activeOverlay = null;
+      }
+    }
+  }
+
   browserApi.commands.onCommand.addListener((command) => {
     if (command === OPEN_COMMAND) {
       lastCommandShortcutAt = Date.now();
@@ -157,6 +173,8 @@
       startSwitcher("command").catch((error) => console.error("Unable to open Quick Tab Switcher", error));
     } else if (command === SEARCH_COMMAND) {
       enterSearchFromCommand().catch((error) => console.error("Unable to search Quick Tab Switcher tabs", error));
+    } else if (command === CLOSE_COMMAND) {
+      closeSelectedFromCommand().catch((error) => console.error("Unable to close selected Quick Tab Switcher tab", error));
     }
   });
 
@@ -167,6 +185,10 @@
 
     if (message.type === "mru-switcher:activate" && Number.isInteger(message.tabId)) {
       return activateTab(message.tabId, message.windowId);
+    }
+
+    if (message.type === "mru-switcher:close-tab" && Number.isInteger(message.tabId)) {
+      return closeTab(message.tabId);
     }
 
     if (message.type === "mru-switcher:open-from-popup") {

@@ -368,6 +368,13 @@
       return;
     }
 
+    if (!state.searchMode && isCloseTrigger(event)) {
+      event.preventDefault();
+      event.stopPropagation();
+      closeSelectedTab();
+      return;
+    }
+
     if (key === "Tab" && state.searchMode) {
       event.preventDefault();
       event.stopPropagation();
@@ -389,6 +396,10 @@
     }
   }
 
+  function isCloseTrigger(event) {
+    return event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey && isConfiguredKey(event, state.options.closeKey || "w");
+  }
+
   function isVimNavigationKey(event) {
     return isKey(event, "J") || isKey(event, "K");
   }
@@ -401,7 +412,11 @@
   }
 
   function isSearchTrigger(event, searchKey) {
-    const normalizedKey = core.normalizeSearchKey(searchKey);
+    return isConfiguredKey(event, searchKey);
+  }
+
+  function isConfiguredKey(event, configuredKey) {
+    const normalizedKey = core.normalizeSearchKey(configuredKey);
     if (event.key && event.key.length === 1 && event.key.toLowerCase() === normalizedKey) {
       return true;
     }
@@ -466,6 +481,31 @@
     render();
   }
 
+  function closeSelectedTab() {
+    const selected = state.visibleTabs[state.selectedIndex];
+    if (!selected) {
+      return;
+    }
+
+    browserApi.runtime.sendMessage({
+      type: "mru-switcher:close-tab",
+      tabId: selected.id
+    }).catch(() => undefined);
+
+    state.allTabs = state.allTabs.filter((tab) => tab.id !== selected.id);
+    state.visibleTabs = state.visibleTabs.filter((tab) => tab.id !== selected.id);
+    state.previewCache.delete(selected.id);
+
+    if (!state.visibleTabs.length) {
+      finish(false);
+      return;
+    }
+
+    state.selectedIndex = core.wrapIndex(state.selectedIndex, state.visibleTabs.length);
+    state.previewRequestId += 1;
+    render();
+  }
+
   function finish(activate) {
     const selected = state.visibleTabs[state.selectedIndex];
     state.root.hidden = true;
@@ -490,6 +530,8 @@
       move(message.delta || 1);
     } else if (message && message.type === "mru-switcher:enter-search" && state.root && !state.root.hidden) {
       enterSearchMode();
+    } else if (message && message.type === "mru-switcher:close-selected" && state.root && !state.root.hidden) {
+      closeSelectedTab();
     }
   });
 

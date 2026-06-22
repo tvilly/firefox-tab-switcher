@@ -51,6 +51,7 @@ test("normalizeOptions keeps valid preferences and repairs invalid values", () =
   assert.deepEqual(core.normalizeOptions({
     mainShortcut: "Alt+K",
     searchKey: "K",
+    closeKey: "W",
     captureTextInputShortcut: true,
     enableVimNavigation: true,
     displayMode: "preview",
@@ -61,6 +62,7 @@ test("normalizeOptions keeps valid preferences and repairs invalid values", () =
   }), {
     mainShortcut: "Alt+K",
     searchKey: "k",
+    closeKey: "w",
     captureTextInputShortcut: true,
     enableVimNavigation: true,
     displayMode: "preview",
