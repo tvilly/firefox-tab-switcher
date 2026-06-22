@@ -5,7 +5,10 @@
 
 #mru-tab-switcher {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: calc(100vw * var(--mru-zoom-factor, 1));
+  height: calc(100vh * var(--mru-zoom-factor, 1));
   z-index: 2147483647;
   display: grid;
   place-items: center;
@@ -13,6 +16,8 @@
   color: #f8fafc;
   font: 14px/1.4 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: color-mix(in srgb, #111827 28%, transparent);
+  transform: scale(var(--mru-inverse-zoom-factor, 1));
+  transform-origin: top left;
 }
 
 #mru-tab-switcher[hidden] {

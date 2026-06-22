@@ -28,6 +28,15 @@
     return tab || null;
   }
 
+  async function getTabZoom(tabId) {
+    if (!browserApi.tabs.getZoom) {
+      return 1;
+    }
+
+    const zoomFactor = await browserApi.tabs.getZoom(tabId).catch(() => 1);
+    return Number.isFinite(zoomFactor) && zoomFactor > 0 ? zoomFactor : 1;
+  }
+
   async function activateTab(tabId, windowId) {
     if (Number.isInteger(windowId)) {
       await browserApi.windows.update(windowId, { focused: true }).catch(() => undefined);
@@ -97,6 +106,7 @@
     }
 
     const options = await getOptions();
+    const zoomFactor = await getTabZoom(activeTab.id);
     const tabs = await collectTabs(options, activeTab.id);
     const payload = {
       type: "mru-switcher:open-or-cycle",
@@ -104,6 +114,7 @@
       options,
       originalTabId: activeTab.id,
       originalWindowId: activeTab.windowId,
+      zoomFactor,
       selectedIndex: core.initialSelectedIndex(tabs),
       enterSearch: source === "search-command",
       tabs

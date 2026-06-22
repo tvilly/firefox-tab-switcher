@@ -29,7 +29,8 @@
     originalTabId: null,
     modifierReleased: false,
     wheelRemainder: 0,
-    isOpen: false
+    isOpen: false,
+    zoomFactor: 1
   };
 
   function start(payload) {
@@ -42,6 +43,7 @@
     state.searchMode = Boolean(payload.enterSearch);
     state.modifierReleased = false;
     state.isOpen = true;
+    state.zoomFactor = normalizeZoomFactor(payload.zoomFactor);
     state.previewCache.clear();
     state.previewRequestId += 1;
 
@@ -149,6 +151,8 @@
     state.root.dataset.theme = state.options.theme;
     state.root.dataset.density = state.options.density;
     state.root.dataset.displayMode = state.options.displayMode;
+    state.root.style.setProperty("--mru-zoom-factor", String(state.zoomFactor));
+    state.root.style.setProperty("--mru-inverse-zoom-factor", String(1 / state.zoomFactor));
     state.searchWrap.hidden = !state.searchMode;
     state.count.textContent = `${state.visibleTabs.length} tab${state.visibleTabs.length === 1 ? "" : "s"}`;
 
@@ -210,6 +214,11 @@
 
     keepSelectedItemVisible();
     updatePreviewPane();
+  }
+
+  function normalizeZoomFactor(value) {
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) && numericValue > 0 ? numericValue : 1;
   }
 
   function updatePreviewPane() {
